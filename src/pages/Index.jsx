@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Container, Text, VStack, Heading, Box, SimpleGrid, Badge, Input, Textarea, FormControl, FormLabel, Button as ChakraButton } from "@chakra-ui/react";
+import { Input, Textarea, FormControl, FormLabel, Button as ChakraButton, VStack, Heading, Container, SimpleGrid, Box, Badge, Text } from "@chakra-ui/react";
 import { FaBriefcase } from "react-icons/fa";
+import { useState } from "react";
 
 const initialJobs = [
   { title: "Frontend Developer", type: "Full-time", location: "Remote" },
@@ -20,11 +20,34 @@ const Index = () => {
     link: "",
   });
 
+  const [applications, setApplications] = useState([]);
+  const [newApplication, setNewApplication] = useState({
+    name: "",
+    email: "",
+    resume: null,
+    coverLetter: "",
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewJob({
       ...newJob,
       [name]: value,
+    });
+  };
+
+  const handleApplicationChange = (e) => {
+    const { name, value } = e.target;
+    setNewApplication({
+      ...newApplication,
+      [name]: value,
+    });
+  };
+
+  const handleResumeChange = (e) => {
+    setNewApplication({
+      ...newApplication,
+      resume: e.target.files[0],
     });
   };
 
@@ -43,6 +66,20 @@ const Index = () => {
     });
   };
 
+  const handleApplicationSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically handle the form submission, e.g., send the data to a server
+    console.log("New Application:", newApplication);
+    setApplications([...applications, newApplication]);
+    // Clear the form
+    setNewApplication({
+      name: "",
+      email: "",
+      resume: null,
+      coverLetter: "",
+    });
+  };
+
   return (
     <Container centerContent maxW="container.xl" py={10}>
       <VStack spacing={6} mb={10}>
@@ -50,54 +87,44 @@ const Index = () => {
           Welcome to Job Listings
         </Heading>
       </VStack>
-      <VStack as="form" spacing={6} width="100%" onSubmit={handleSubmit}>
+      <VStack as="form" spacing={6} width="100%" onSubmit={handleApplicationSubmit}>
         <FormControl isRequired>
-          <FormLabel>Job Title</FormLabel>
+          <FormLabel>Name</FormLabel>
           <Input
-            name="title"
-            value={newJob.title}
-            onChange={handleInputChange}
-            placeholder="Enter job title"
+            name="name"
+            value={newApplication.name}
+            onChange={handleApplicationChange}
+            placeholder="Enter your name"
           />
         </FormControl>
         <FormControl isRequired>
-          <FormLabel>Company Name</FormLabel>
+          <FormLabel>Email</FormLabel>
           <Input
-            name="company"
-            value={newJob.company}
-            onChange={handleInputChange}
-            placeholder="Enter company name"
+            name="email"
+            value={newApplication.email}
+            onChange={handleApplicationChange}
+            placeholder="Enter your email"
           />
         </FormControl>
         <FormControl isRequired>
-          <FormLabel>Location</FormLabel>
+          <FormLabel>Resume</FormLabel>
           <Input
-            name="location"
-            value={newJob.location}
-            onChange={handleInputChange}
-            placeholder="Enter job location"
+            type="file"
+            name="resume"
+            onChange={handleResumeChange}
           />
         </FormControl>
         <FormControl isRequired>
-          <FormLabel>Job Description</FormLabel>
+          <FormLabel>Cover Letter</FormLabel>
           <Textarea
-            name="description"
-            value={newJob.description}
-            onChange={handleInputChange}
-            placeholder="Enter job description"
-          />
-        </FormControl>
-        <FormControl isRequired>
-          <FormLabel>Application Link</FormLabel>
-          <Input
-            name="link"
-            value={newJob.link}
-            onChange={handleInputChange}
-            placeholder="Enter application link"
+            name="coverLetter"
+            value={newApplication.coverLetter}
+            onChange={handleApplicationChange}
+            placeholder="Enter your cover letter"
           />
         </FormControl>
         <ChakraButton type="submit" colorScheme="teal" size="md">
-          Post Job
+          Apply
         </ChakraButton>
       </VStack>
       <SimpleGrid columns={3} spacing={10} width="100%" mt={10}>
